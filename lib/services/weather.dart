@@ -1,19 +1,27 @@
-import 'dart:developer';
-
 import 'package:clima/services/loction.dart';
 import 'package:clima/services/network.dart';
 
+const apiKey = 'e72ca729af228beabd5d20e3b7749713';
+const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
+
 class WeatherModel {
+  Future<dynamic> getCityWeather(String cityName) async {
+    NetworkHelper networkHelper = NetworkHelper(
+        '$openWeatherMapURL?q=$cityName&appid=$apiKey&units=metric');
 
-  final apiKey = 'ce8ad28e-afab-11ed-b59d-0242ac130002-ce8ad306-afab-11ed-b59d-0242ac130002';
-  final openWeatherMapURl = '"https://api.stormglass.io/v2/weather/point?lat=58.7984&lng=17.8081&params=windSpeed"-H"Authorization:ce8ad28e-afab-11ed-b59d-0242ac130002-ce8ad306-afab-11ed-b59d-0242ac130002"';
+    var weatherData = await networkHelper.getData();
+    return weatherData;
+  }
+
   Future<dynamic> getLocationWeather() async {
-     var locationoo = location();
-    await locationoo.getcurrentloction();
+    Location location = Location();
+    await location.getCurrentLocation();
 
+    NetworkHelper networkHelper = NetworkHelper(
+        '$openWeatherMapURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric');
 
-    Networkhelper networkHelper = Networkhelper(
-        '$openWeatherMapURl?lat=${locationoo.latitude}&lon=${locationoo.longitude}&appid=$apiKey&units=metric');
+    var weatherData = await networkHelper.getData();
+    return weatherData;
   }
 
   String getWeatherIcon(int condition) {
